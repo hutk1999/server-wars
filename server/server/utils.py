@@ -8,7 +8,7 @@ def convert_ip_to_country(ip: str, server_logger: Logger) -> str:
     try:
         return geo.get(ip).get('country').get('names').get('en')
     except ValueError:
-        server_logger.warning("Couldn't find country for given IP", extra={'ip': ip})
+        server_logger.warning("Couldn't find country for given IP", extra={'values': ip})
         return "Unknown"
 
 

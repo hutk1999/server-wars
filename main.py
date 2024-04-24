@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
-from server.geoserver import geolocation_api
+from server.server.geoserver import geolocation_api
 
 app = FastAPI()
 

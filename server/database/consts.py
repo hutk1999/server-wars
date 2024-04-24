@@ -12,7 +12,7 @@ RETRIEVE_TUPLE_ID = 'SELECT ID from geolocation WHERE ip = :ip and country = :co
 
 INSERT_DATETIME_ROW = 'INSERT INTO datetime_storage VALUES (:ID, :datetime)'
 
-CONNECT_DB = 'database/tests.db'
+CONNECT_DB = 'tests.db'
 
 GET_TOP_FIVE_VALUES = """ SELECT count(*) as max_hits, country FROM geolocation 
     FULL JOIN datetime_storage On geolocation.ID = datetime_storage.ID 
