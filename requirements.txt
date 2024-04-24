@@ -1,0 +1,5 @@
+fastapi
+"uvicorn[standard]
+maxminddb-geolite2
+requests
+pydantic
