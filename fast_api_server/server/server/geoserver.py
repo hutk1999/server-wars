@@ -6,23 +6,23 @@ from fastapi import APIRouter
 
 from server.database.utils import insert_information_to_db, select_ips_from_country, get_top_five_values, \
     get_server_connection_cursor
-from server.server.utils import convert_ip_to_country, get_geo_values
+from server.server.utils import convert_ip_to_country, GeoValues
 
 geolocation_api = APIRouter(
     prefix='/geolocation'
 )
 
 server_cursor = get_server_connection_cursor()
-logging.basicConfig(filename='server.log', filemode='a', level=logging.INFO,
+logging.basicConfig(filename='fast_api_server.log', filemode='a', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s - %(values)s')
-server_logger = logging.getLogger('server')
+server_logger = logging.getLogger('fast_api_server')
 
 
 @geolocation_api.get('/ip')
 async def country_finder(ip: str = '8.8.8.8') -> str:
     server_logger.info("Recieved an ip", extra={"values": ip})
     country = convert_ip_to_country(ip, server_logger)
-    geo_values = get_geo_values(ip, country)
+    geo_values = GeoValues(ip=ip, country=country).dict()
     insert_information_to_db(geo_values, server_cursor)
     server_logger.info("Added row to DB", extra={'values': geo_values})
     return country

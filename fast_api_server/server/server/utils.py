@@ -1,6 +1,13 @@
 from typing import Dict
 from logging import Logger
 from geolite2 import geolite2
+from pydantic import BaseModel
+
+
+class GeoValues(BaseModel):
+    ip: str
+    country: str
+
 
 
 def convert_ip_to_country(ip: str, server_logger: Logger) -> str:

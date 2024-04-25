@@ -1,0 +1,27 @@
+services:
+  attack_server:
+    container_name: attack_server
+    build:
+      context: attack_cli
+      dockerfile: Dockerfile
+    networks:
+      - server_net
+    ports:
+      - 8080:8080
+    command: tail -f /dev/null
+#    command: python attack_server/attack_cli.py
+
+
+  fast_api_server:
+    build:
+      context: fast_api_server
+      dockerfile: Dockerfile
+    container_name: fast_api_server
+    networks:
+    - server_net
+    ports:
+      - 8000:8000
+    restart: always
+# TODO: Make two networks one for outside work, and one for inside
+networks:
+  server_net:
