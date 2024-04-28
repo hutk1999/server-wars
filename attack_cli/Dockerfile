@@ -9,4 +9,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8080
 
-CMD python attack_server/attack_cli.py
+CMD bash
