@@ -14,6 +14,7 @@ def url_buster_attack():
 
 
 def http_flood_attack():
+    # TODO: Decide if i should make it a while true, so it isn't one run per thread
     with socket(AF_INET, SOCK_STREAM) as s:
         try:
             s.connect((HOST_IP, HOST_PORT))

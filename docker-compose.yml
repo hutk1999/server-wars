@@ -5,7 +5,8 @@ services:
       context: attack_cli
       dockerfile: Dockerfile
     networks:
-      - server_net
+      server_net:
+        ipv4_address: 10.10.0.3
     ports:
       - 8080:8080
     command: tail -f /dev/null
@@ -18,10 +19,16 @@ services:
       dockerfile: Dockerfile
     container_name: fast_api_server
     networks:
-    - server_net
+      server_net:
+        ipv4_address: 10.10.0.2
     ports:
       - 8000:8000
     restart: always
 # TODO: Make two networks one for outside work, and one for inside
 networks:
   server_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/16
+          gateway: 10.10.0.1
