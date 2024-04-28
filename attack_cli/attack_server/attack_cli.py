@@ -17,8 +17,7 @@ class AttackCLI(cmd.Cmd):
         create_multithreaded_attack(http_flood_attack)
 
     def do_quit(self, line):
-        #TODO:
-        pass
+        quit()
 
 
 AttackCLI().cmdloop()
