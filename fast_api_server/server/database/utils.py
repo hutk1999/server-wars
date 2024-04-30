@@ -1,7 +1,8 @@
 import sqlite3
-from sqlite3 import Cursor
 from datetime import datetime
+from sqlite3 import Cursor
 from typing import List, Tuple, Union
+
 from server.database.consts import (INSERT_GEOLOCATION_ROW,
                                     GET_IPS_BY_DATETIME,
                                     RETRIEVE_TUPLE_ID,
@@ -22,13 +23,12 @@ def parse_item_from_tuple(item_tuple: Tuple) -> int:
     return item_tuple[0]
 
 
-def check_if_ID_exists(geo_values: dict, c: Cursor) -> Tuple:
+def check_if_id_exists(geo_values: dict, c: Cursor) -> Tuple:
     return c.execute(RETRIEVE_TUPLE_ID, geo_values).fetchone()
 
 
 def insert_information_to_db(geo_values: dict, c: Cursor) -> None:
-    geo_id = check_if_ID_exists(geo_values, c)
-    # TODO: Make sure not ID actually works lol
+    geo_id = check_if_id_exists(geo_values, c)
     if not geo_id:
         c.execute(INSERT_GEOLOCATION_ROW, geo_values)
         geo_id = c.lastrowid

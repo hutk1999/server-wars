@@ -1,4 +1,4 @@
-HOSTNAME = '10.10.0.2:8000'
+HOSTNAME = 'fast_api_server:8000'
 SERVER_IP = '192.168.1.2'
 SERVER_PORT = 9000
 

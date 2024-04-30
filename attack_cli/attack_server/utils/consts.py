@@ -1,4 +1,4 @@
-HOST_IP = '192.168.1.2'
+HOSTNAME = 'reverse_proxy_server'
 
 ATTACK_IP = '192.168.1.3'
 
@@ -8,4 +8,4 @@ ATTACK_PORT = 8080
 
 MESSAGE = b'x'*1024
 
-HTTP_FLOOD_REQUEST = f"GET / HTTP/1.1\r\nHost: {HOST_IP}:{HOST_PORT} \r\n\r\n".encode()
+HTTP_FLOOD_REQUEST = f"GET / HTTP/1.1\r\nHost: {HOSTNAME}:{HOST_PORT} \r\n\r\n".encode()

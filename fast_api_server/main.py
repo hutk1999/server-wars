@@ -1,9 +1,9 @@
-from fastapi import FastAPI
 import uvicorn
+from fastapi import FastAPI
+
 from server.server.geoserver import geolocation_api
 
 app = FastAPI()
-
 
 app.include_router(geolocation_api)
 
