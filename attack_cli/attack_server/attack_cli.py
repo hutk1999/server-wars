@@ -1,6 +1,7 @@
 import cmd
 
-from attacks import create_multithreaded_attack, syn_flood_attack, url_buster_attack, http_flood_attack
+from attacks import create_multithreaded_attack, syn_flood_attack, url_buster_attack, http_flood_attack, \
+    create_url_wordlist
 
 
 class AttackCLI(cmd.Cmd):
@@ -11,6 +12,7 @@ class AttackCLI(cmd.Cmd):
         create_multithreaded_attack(syn_flood_attack)
 
     def do_url_brute_force(self, line):
+        create_url_wordlist()
         create_multithreaded_attack(url_buster_attack)
 
     def do_http_flood(self, line):

@@ -1,96 +1,74 @@
+import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import argparse, os, random, sys, requests
-from io import BytesIO
 from socketserver import ThreadingMixIn
-import threading
+
+import requests
 from requests import Response
 
-from reverse_proxy_server.utils.consts import URL_PATH_WHITELIST
-
-
-def merge_two_dicts(x, y):
-    return x | y
-
-
-def set_header():
-    headers = {
-        'Host': hostname
-    }
-
-    return headers
+from utils.consts import URL_PATH_WHITELIST, USER_AGENTS, HEADER_KEYS, HOSTNAME, SERVER_IP, SERVER_PORT
 
 
 class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.0'
 
-    def do_HEAD(self):
+    def do_HEAD(self) -> None:
         self.do_GET(body=False)
         return
 
-    def do_GET(self, body=True):
+    def do_GET(self, body=True) -> None:
+        global server_logger
         sent = False
         try:
-            url = 'http://{}{}'.format(hostname, self.path)
-            req_header = self.parse_headers()
-            if self.detect_url_brute_force():
-                mock_response = self.create_mock_response(url)
-                self.send_response(200)
-                self.send_resp_headers(mock_response)
-            elif detect_http_flood():
-                pass
-            elif detect_syn_flood():
-                pass
-            else:
-                resp = requests.get(url, headers=merge_two_dicts(req_header, set_header()), verify=False)
+            url = f'http://{hostname}{self.path}'
+            server_logger.info("Got GET request", extra={"values": url})
+            if not self.unsafe_request():
+                server_logger.info("No malicious activities detected", extra={"values": url})
+                response = requests.get(url, headers={'Host': hostname}, verify=False)
                 sent = True
-
-                self.send_response(resp.status_code)
-                self.send_resp_headers(resp)
-                msg = resp.text
-                if body:
-                    self.wfile.write(msg.encode(encoding='UTF-8', errors='strict'))
+                server_logger.info("Received server response", extra={"values": response.status_code})
+                self.response_handler(response, body)
+                server_logger.info("Returned response to user", extra={"values": self.client_address})
                 return
+
         finally:
             if not sent:
-                self.send_error(404, 'error trying to proxy')
+                # self.send_error(200, 'Evil attack detected')
+                server_logger.info("Malicious activities detected", extra={"values": url})
 
-    def create_mock_response(self, url) -> Response:
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.encoding = 'utf-8'
-        mock_response.url = url
-        mock_response.raw = BytesIO(b'Evil attack detected')
-        return mock_response
+    def unsafe_request(self) -> bool:
+        return self.detect_url_brute_force() or self.detect_http_flood()
 
-    def detect_url_brute_force(self):
+    def detect_url_brute_force(self) -> bool:
+        global server_logger
         for allowed_path in URL_PATH_WHITELIST:
             if self.path.startswith(allowed_path):
+                server_logger.info("Whitelisted URL", extra={"values": self.path})
                 return False
+        server_logger.info("Detected non whitelisted URL", extra={"values": self.path})
         return True
 
-    def detect_http_flood(self):
-        pass
+    def detect_http_flood(self) -> bool:
+        global server_logger
+        for allowed_user_agent in USER_AGENTS:
+            if self.headers.get('User-Agent').startswith(allowed_user_agent):
+                server_logger.info("Whitelisted user-agent", extra={"values": self.headers.get('User-Agent')})
+                return False
+        server_logger.info("Detected non whitelisted user-agent", extra={"values": self.headers.get('User-Agent')})
+        return True
 
-    def detect_syn_flood(self):
-        pass
+    def response_handler(self, response: Response, body: bool) -> None:
+        self.send_response(response.status_code)
+        self.send_response_headers(response)
+        message = response.text
+        if body:
+            self.wfile.write(message.encode(encoding='UTF-8', errors='strict'))
 
-    def parse_headers(self):
-        req_header = {}
-        for line in self.headers:
-            line_parts = [o.strip() for o in line.split(':', 1)]
-            if len(line_parts) == 2:
-                req_header[line_parts[0]] = line_parts[1]
-        return req_header
-
-    def send_resp_headers(self, resp):
-        respheaders = resp.headers
-        print('Response Header')
-        for key in respheaders:
-            if key not in ['Content-Encoding', 'Transfer-Encoding', 'content-encoding', 'transfer-encoding',
-                           'content-length', 'Content-Length']:
-                print(key, respheaders[key])
-                self.send_header(key, respheaders[key])
-        self.send_header('Content-Length', len(resp.content))
+    def send_response_headers(self, response: Response) -> None:
+        response_headers = response.headers
+        for key in response_headers:
+            if key not in HEADER_KEYS:
+                self.send_header(key, response_headers[key])
+        self.send_header('Content-Length', len(response.content))
         self.end_headers()
 
 
@@ -98,12 +76,17 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
 
 
-def reverse_proxy():
+def reverse_proxy() -> None:
     global hostname
-    hostname = 'localhost:9000'
-    server_address = ('127.0.0.1', 8000)
+    global server_logger
+    hostname = HOSTNAME
+    server_address = (SERVER_IP, SERVER_PORT)
+    server_logger.info("Starting reverse proxy server", extra={"values": server_address})
     httpd = ThreadedHTTPServer(server_address, ProxyHTTPRequestHandler)
     httpd.serve_forever()
 
 
+logging.basicConfig(filename='reverse_proxy_logger.log', filemode='a', level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s - %(values)s')
+server_logger = logging.getLogger('reverse_proxy_server')
 reverse_proxy()

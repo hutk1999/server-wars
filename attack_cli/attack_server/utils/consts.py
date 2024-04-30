@@ -1,10 +1,8 @@
-URLBUSTER_COMMMAND = 'urlbuster -W attack_server/utils/wordlist.txt http://localhost:8000/'
+HOST_IP = '192.168.1.2'
 
-HOST_IP = '10.10.0.2'
+ATTACK_IP = '192.168.1.3'
 
-ATTACK_IP = '10.10.0.3'
-
-HOST_PORT = 8000
+HOST_PORT = 9000
 
 ATTACK_PORT = 8080
 
