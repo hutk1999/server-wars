@@ -41,6 +41,6 @@ def create_multithreaded_attack(func: Callable) -> None:
 def create_url_wordlist() -> None:
     global url_wordlist
     url_wordlist = set()
-    with open('utils/wordlist.txt', 'r') as wordlist:
+    with open('attack_server/utils/wordlist.txt', 'r') as wordlist:
         for word in wordlist.read().splitlines():
             url_wordlist.add(word)
