@@ -10,7 +10,7 @@ class AttackCLI(cmd.Cmd):
     def do_syn_flood(self, line):
         create_multithreaded_attack(syn_flood_attack)
 
-    def do_brute_force(self, line):
+    def do_url_brute_force(self, line):
         create_multithreaded_attack(url_buster_attack)
 
     def do_http_flood(self, line):

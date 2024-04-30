@@ -1,8 +1,10 @@
-from SynFlood import synflood, conf_iface
-from threading import Thread
-from utils.consts import URLBUSTER_COMMMAND, HOST_IP, HOST_PORT, ATTACK_IP, ATTACK_PORT, MESSAGE, HTTP_FLOOD_REQUEST
 import subprocess
 from socket import SOCK_STREAM, AF_INET, socket, error as socket_error
+from threading import Thread
+
+from SynFlood import synflood, conf_iface
+
+from utils.consts import URLBUSTER_COMMMAND, HOST_IP, HOST_PORT, ATTACK_IP, ATTACK_PORT, MESSAGE, HTTP_FLOOD_REQUEST
 
 
 def syn_flood_attack():
@@ -28,3 +30,5 @@ def create_multithreaded_attack(func):
         thread = Thread(target=func)
         thread.start()
 
+def create_url_worlist():
+    pass
