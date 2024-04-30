@@ -27,14 +27,14 @@ def check_if_ID_exists(geo_values: dict, c: Cursor) -> Tuple:
 
 
 def insert_information_to_db(geo_values: dict, c: Cursor) -> None:
-    ID = check_if_ID_exists(geo_values, c)
+    geo_id = check_if_ID_exists(geo_values, c)
     # TODO: Make sure not ID actually works lol
-    if not ID:
+    if not geo_id:
         c.execute(INSERT_GEOLOCATION_ROW, geo_values)
-        ID = c.lastrowid
+        geo_id = c.lastrowid
     else:
-        ID = parse_item_from_tuple(ID)
-    c.execute(INSERT_DATETIME_ROW, {'ID': ID, 'datetime': str(datetime.now())})
+        geo_id = parse_item_from_tuple(geo_id)
+    c.execute(INSERT_DATETIME_ROW, {'ID': geo_id, 'datetime': str(datetime.now())})
     c.connection.commit()
 
 
