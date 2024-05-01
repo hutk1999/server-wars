@@ -1,5 +1,7 @@
 HOSTNAME = 'reverse_proxy_server'
 
+HOST_IP = '192.168.1.2'
+
 ATTACK_IP = '192.168.1.3'
 
 HOST_PORT = 9000
