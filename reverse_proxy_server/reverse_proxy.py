@@ -32,8 +32,8 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
 
         finally:
             if not sent:
-                # self.send_error(200, 'Evil attack detected')
-                server_logger.info("Malicious activities detected", extra={"values": url})
+                server_logger.info("Malicious activities detected",
+                                   extra={"values": f'{url} from {self.client_address}'})
 
     def unsafe_request(self) -> bool:
         return self.detect_url_brute_force() or self.detect_http_flood()
